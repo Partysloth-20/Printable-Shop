@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Color Product Page</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+        }
+
+        .product-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            padding: 20px;
+        }
+
+        /* --- GALLERY --- */
+        .main-image-wrapper {
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+        }
+
+        #main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnail-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .thumb {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.7;
+        }
+
+        .thumb.active {
+            border-color: var(--primary-color);
+            opacity: 1;
+        }
+
+        /* --- COLOR SWATCHES --- */
+        .swatch-container {
+            margin: 20px 0;
+        }
+
+        .swatch-list {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .swatch {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            outline: 1px solid #d1d5db;
+            transition: transform 0.2s;
+        }
+
+        .swatch:hover { transform: scale(1.1); }
+        
+        .swatch.active {
+            outline: 2px solid var(--primary-color);
+        }
+
+        /* Colors */
+        .bg-black { background-color: #1a1a1a; }
+        .bg-silver { background-color: #d1d5db; }
+        .bg-blue { background-color: #1e3a8a; }
+
+        /* --- INFO --- */
+        .price { font-size: 2rem; font-weight: bold; color: var(--text-dark); margin: 10px 0; }
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .product-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Click the button to go to another page</h1>
+    <button onclick="window.location.href='secondpage.html';">Go to Second Page</button>
+
+<div class="product-container">
+    <div class="gallery-section">
+        <div class="main-image-wrapper">
+            <img id="main-img" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" alt="Product">
+        </div>
+        <div class="thumbnail-row" id="thumb-row">
+            </div>
+    </div>
+
+    <div class="product-info">
+        <h1 id="product-title">Sonic-X Pro</h1>
+        <p class="price" id="product-price">$299.00</p>
+        
+        <div class="swatch-container">
+            <p><strong>Color:</strong> <span id="color-name">Midnight Black</span></p>
+            <div class="swatch-list">
+                <div class="swatch bg-black active" onclick="updateColor('black')" title="Black"></div>
+                <div class="swatch bg-silver" onclick="updateColor('silver')" title="Silver"></div>
+                <div class="swatch bg-blue" onclick="updateColor('blue')" title="Blue"></div>
+            </div>
+        </div>
+
+        <p class="description">Experience high-fidelity audio with our signature noise-cancelling technology.</p>
+        
+        <button class="btn">Add to Cart</button>
+    </div>
+</div>
+
+<script>
+    // Data Structure for Colors and Images
+    const productData = {
+        black: {
+            name: "Midnight Black",
+            price: "$299.00",
+            images: [
+                "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+                "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800"
+            ]
+        },
+        silver: {
+            name: "Arctic Silver",
+            price: "$319.00",
+            images: [
+                "https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=800",
+                "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800"
+            ]
+        },
+        blue: {
+            name: "Deep Ocean Blue",
+            price: "$299.00",
+            images: [
+                "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800",
+                "https://images.unsplash.com/photo-1520170350707-b2da59c70f05?w=800"
+            ]
+        }
+    };
+
+    function updateColor(colorKey) {
+        const data = productData[colorKey];
+        
+        // 1. Update Text & Price
+        document.getElementById('color-name').innerText = data.name;
+        document.getElementById('product-price').innerText = data.price;
+
+        // 2. Update Swatch UI
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // 3. Update Gallery
+        const thumbRow = document.getElementById('thumb-row');
+        thumbRow.innerHTML = ''; // Clear old thumbs
+
+        data.images.forEach((imgSrc, index) => {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.className = 'thumb' + (index === 0 ? ' active' : '');
+            img.onclick = function() {
+                document.getElementById('main-img').src = imgSrc;
+                document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            };
+            thumbRow.appendChild(img);
+        });
+
+        // 4. Reset Main Image to first in set
+        document.getElementById('main-img').src = data.images[0];
+    }
+
+    // Initialize with Black on load
+    window.onload = () => updateColor('black');
+</script>
+
+</body>
+</html>
